@@ -89,23 +89,23 @@
           "type": "hotspot_card",
           "settings": {
             "selected_product": "classic-leather-jacket",
-            "top_pos": 46,
-            "left_pos": 50
+            "top_pos": 48,
+            "left_pos": 56
           }
         },
         "hotspot_card_hdLPFN": {
           "type": "hotspot_card",
           "settings": {
             "selected_product": "classic-varsity-top",
-            "top_pos": 46,
-            "left_pos": 50
+            "top_pos": 54,
+            "left_pos": 56
           }
         },
         "hotspot_card_cHqWxD": {
           "type": "hotspot_card",
           "settings": {
             "selected_product": "dark-denim-top",
-            "top_pos": 46,
+            "top_pos": 50,
             "left_pos": 50
           }
         }
