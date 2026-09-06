@@ -26,7 +26,7 @@
     "header": {
       "type": "header",
       "custom_css": [
-        "header, .header-wrapper, .header {display: none !important;}"
+        "header,.header-wrapper,.header {display: none !important;}"
       ],
       "settings": {
         "logo_position": "middle-left",
