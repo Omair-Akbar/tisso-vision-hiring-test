@@ -57,11 +57,77 @@
         "button_link": "",
         "footer_text": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
       }
+    },
+    "shoppable_lookbook_AfQKD9": {
+      "type": "shoppable-lookbook",
+      "blocks": {
+        "hotspot_card_rDhtqQ": {
+          "type": "hotspot_card",
+          "settings": {
+            "selected_product": "black-leather-bag",
+            "top_pos": 50,
+            "left_pos": 50
+          }
+        },
+        "hotspot_card_ADrbrt": {
+          "type": "hotspot_card",
+          "settings": {
+            "selected_product": "blue-silk-tuxedo",
+            "top_pos": 50,
+            "left_pos": 50
+          }
+        },
+        "hotspot_card_NQJ6yi": {
+          "type": "hotspot_card",
+          "settings": {
+            "selected_product": "chequered-red-shirt",
+            "top_pos": 50,
+            "left_pos": 50
+          }
+        },
+        "hotspot_card_HRFfnd": {
+          "type": "hotspot_card",
+          "settings": {
+            "selected_product": "classic-leather-jacket",
+            "top_pos": 50,
+            "left_pos": 50
+          }
+        },
+        "hotspot_card_hdLPFN": {
+          "type": "hotspot_card",
+          "settings": {
+            "selected_product": "classic-varsity-top",
+            "top_pos": 50,
+            "left_pos": 50
+          }
+        },
+        "hotspot_card_cHqWxD": {
+          "type": "hotspot_card",
+          "settings": {
+            "selected_product": "dark-denim-top",
+            "top_pos": 50,
+            "left_pos": 50
+          }
+        }
+      },
+      "block_order": [
+        "hotspot_card_rDhtqQ",
+        "hotspot_card_ADrbrt",
+        "hotspot_card_NQJ6yi",
+        "hotspot_card_HRFfnd",
+        "hotspot_card_hdLPFN",
+        "hotspot_card_cHqWxD"
+      ],
+      "name": "Tisso Wild Lookbook",
+      "settings": {
+        "title": "Tisso vison in the wild"
+      }
     }
   },
   "order": [
     "announcement-bar",
     "header",
-    "gift_guide_hero_TQjny9"
+    "gift_guide_hero_TQjny9",
+    "shoppable_lookbook_AfQKD9"
   ]
 }
