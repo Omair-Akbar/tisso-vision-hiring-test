@@ -33,29 +33,31 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none; /* Editor drag/select interfere na kare */
 }
 
 /* Hotspot Plus Icon */
 .tisso-plus-btn {
   position: absolute;
-  width: 26px;
-  height: 26px;
-  background: rgba(255, 255, 255, 0.9);
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.95);
   border: none;
   border-radius: 50%;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: #111;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   transform: translate(-50%, -50%);
   transition: all 0.2s ease;
-  z-index: 2;
+  z-index: 9999; /* Higher priority over editor blocks */
   padding: 0;
   line-height: 1;
+  pointer-events: auto !important;
 }
 
 .tisso-plus-btn:hover {
@@ -68,17 +70,17 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 999999;
+  z-index: 9999999 !important;
 }
 
 .tisso-modal-mask.active {
-  display: flex;
+  display: flex !important;
 }
 
 .tisso-modal-content {
@@ -87,8 +89,9 @@
   max-width: 90%;
   padding: 24px;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
   border-radius: 2px;
+  z-index: 10000000 !important;
 }
 
 .tisso-modal-close-btn {
@@ -97,7 +100,7 @@
   right: 14px;
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   color: #444;
 }
@@ -224,7 +227,8 @@
         {% endif %}
 
         {% if product != blank %}
-          <button class="tisso-plus-btn" 
+          <button type="button" 
+                  class="tisso-plus-btn" 
                   style="top: {{ block.settings.top_pos }}%; left: {{ block.settings.left_pos }}%;"
                   data-title="{{ product.title | escape }}"
                   data-price="{{ product.price | money }}"
@@ -239,16 +243,15 @@
   </div>
 </div>
 
-<!-- Modal Popup Window -->
 <div class="tisso-modal-mask" id="TissoWildModal">
   <div class="tisso-modal-content">
-    <button class="tisso-modal-close-btn" onclick="closeTissoWildModal()">&times;</button>
+    <button type="button" class="tisso-modal-close-btn" id="tissoCloseBtn">&times;</button>
     
     <div class="tisso-modal-header">
       <img id="tisso-modal-img" src="" alt="Product Image">
       <div class="tisso-modal-meta">
         <h3 id="tisso-modal-title">Tailored Jacket</h3>
-        <div class="price" id="tisso-modal-price">980,00€</div>
+        <div class="price" id="tisso-modal-price">0,00€</div>
         <p id="tisso-modal-desc">This product description will appear here...</p>
       </div>
     </div>
@@ -273,49 +276,78 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const modal = document.getElementById("TissoWildModal");
-    const hotspotBtns = document.querySelectorAll(".tisso-plus-btn");
-    const variantSelect = document.getElementById("tisso-variant-select-box");
+  (function() {
+    function initTissoLookbook() {
+      const modal = document.getElementById("TissoWildModal");
+      const closeBtn = document.getElementById("tissoCloseBtn");
+      const variantSelect = document.getElementById("tisso-variant-select-box");
 
-    hotspotBtns.forEach(btn => {
-      btn.addEventListener("click", function(e) {
-        e.stopPropagation();
-        const title = this.getAttribute("data-title");
-        const price = this.getAttribute("data-price");
-        const desc = this.getAttribute("data-desc");
-        const image = this.getAttribute("data-image");
-        const variants = JSON.parse(this.getAttribute("data-variants"));
+      if (!modal) return;
 
-        document.getElementById("tisso-modal-title").innerText = title;
-        document.getElementById("tisso-modal-price").innerText = price;
-        document.getElementById("tisso-modal-desc").innerText = desc;
-        document.getElementById("tisso-modal-img").src = image;
+      // Event delegation se click target capture karna
+      document.body.addEventListener("click", function(e) {
+        const btn = e.target.closest(".tisso-plus-btn");
+        if (btn) {
+          e.preventDefault();
+          e.stopPropagation();
 
-        // Populate Variants / Sizes Dropdown dynamically from CSV data
-        variantSelect.innerHTML = "";
-        variants.forEach(variant => {
-          const option = document.createElement("option");
-          option.value = variant.id;
-          option.text = variant.title + " - " + (variant.available ? "In Stock" : "Sold Out");
-          if (!variant.available) option.disabled = true;
-          variantSelect.appendChild(option);
+          const title = btn.getAttribute("data-title");
+          const price = btn.getAttribute("data-price");
+          const desc = btn.getAttribute("data-desc");
+          const image = btn.getAttribute("data-image");
+          const variantsRaw = btn.getAttribute("data-variants");
+
+          if (title) document.getElementById("tisso-modal-title").innerText = title;
+          if (price) document.getElementById("tisso-modal-price").innerText = price;
+          if (desc) document.getElementById("tisso-modal-desc").innerText = desc;
+          if (image) document.getElementById("tisso-modal-img").src = image;
+
+          if (variantsRaw && variantSelect) {
+            try {
+              const variants = JSON.parse(variantsRaw);
+              variantSelect.innerHTML = "";
+              variants.forEach(variant => {
+                const option = document.createElement("option");
+                option.value = variant.id;
+                option.text = variant.title + " - " + (variant.available ? "In Stock" : "Sold Out");
+                if (!variant.available) option.disabled = true;
+                variantSelect.appendChild(option);
+              });
+            } catch (err) {
+              console.error("Variant JSON parse error", err);
+            }
+          }
+
+          modal.classList.add("active");
+        }
+      }, true);
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          modal.classList.remove("active");
         });
+      }
 
-        modal.classList.add("active");
+      modal.addEventListener("click", function(e) {
+        if (e.target === modal) {
+          modal.classList.remove("active");
+        }
       });
-    });
-  });
-
-  function closeTissoWildModal() {
-    document.getElementById("TissoWildModal").classList.remove("active");
-  }
-
-  document.getElementById("TissoWildModal").addEventListener("click", function(e) {
-    if (e.target === this) {
-      closeTissoWildModal();
     }
-  });
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initTissoLookbook);
+    } else {
+      initTissoLookbook();
+    }
+
+    // Shopify Customizer Editor re-load handle karne ke liye
+    if (window.Shopify && Shopify.designMode) {
+      document.addEventListener("shopify:section:load", initTissoLookbook);
+      document.addEventListener("shopify:block:select", initTissoLookbook);
+    }
+  })();
 </script>
 
 {% schema %}
