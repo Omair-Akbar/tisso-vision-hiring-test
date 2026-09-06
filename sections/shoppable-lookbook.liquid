@@ -1,0 +1,344 @@
+{%- style -%}
+.tisso-lookbook-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: inherit;
+}
+
+.tisso-lookbook-title {
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 30px;
+  color: #111;
+}
+
+.tisso-lookbook-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.tisso-lookbook-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.tisso-lookbook-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Hotspot Pin (+ Icon) */
+.hotspot-btn {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s;
+  z-index: 2;
+}
+
+.hotspot-btn:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: #fff;
+}
+
+/* Modal Popup */
+.quickview-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.quickview-modal-overlay.active {
+  display: flex;
+}
+
+.quickview-modal {
+  background: #fff;
+  width: 360px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  border-radius: 2px;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+}
+
+.quickview-product-header {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.quickview-product-header img {
+  width: 80px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.quickview-info h3 {
+  font-size: 15px;
+  margin: 0 0 5px 0;
+  font-weight: 500;
+}
+
+.quickview-info .price {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.quickview-info p {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.quickview-option-label {
+  font-size: 12px;
+  margin: 15px 0 8px;
+  color: #333;
+}
+
+.color-options {
+  display: flex;
+  gap: 0;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+
+.color-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+
+.color-btn.active {
+  border: 2px solid #000;
+  font-weight: 600;
+}
+
+.size-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .tisso-lookbook-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+{%- endstyle -%}
+
+<div class="tisso-lookbook-container">
+  <h2 class="tisso-lookbook-title">{{ section.settings.title }}</h2>
+
+  <div class="tisso-lookbook-grid">
+    {% for block in section.blocks %}
+      <div class="tisso-lookbook-card" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          <img src="{{ block.settings.image | image_url: width: 800 }}" alt="Lookbook Image" loading="lazy">
+        {% else %}
+          {{ 'image' | placeholder_svg_tag }}
+        {% endif %}
+
+        {% if block.settings.product != blank %}
+          {% assign prod = block.settings.product %}
+          <button class="hotspot-btn" 
+                  style="top: {{ block.settings.top_pos }}%; left: {{ block.settings.left_pos }}%;"
+                  data-title="{{ prod.title }}"
+                  data-price="{{ prod.price | money }}"
+                  data-desc="{{ prod.description | strip_html | truncate: 100 }}"
+                  data-image="{{ prod.featured_image | image_url: width: 200 }}"
+                  data-id="{{ prod.selected_or_first_available_variant.id }}">
+            +
+          </button>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div class="quickview-modal-overlay" id="LookbookModal">
+  <div class="quickview-modal">
+    <button class="modal-close-btn" onclick="closeLookbookModal()">&times;</button>
+    
+    <div class="quickview-product-header">
+      <img id="modal-img" src="" alt="Product">
+      <div class="quickview-info">
+        <h3 id="modal-title">Product Title</h3>
+        <div class="price" id="modal-price">0,00€</div>
+        <p id="modal-desc">Product description goes here.</p>
+      </div>
+    </div>
+
+    <form method="post" action="/cart/add" id="modal-cart-form">
+      <input type="hidden" name="id" id="modal-variant-id" value="">
+      
+      <div class="quickview-option-label">Color</div>
+      <div class="color-options">
+        <button type="button" class="color-btn active">Blue</button>
+        <button type="button" class="color-btn">Black</button>
+      </div>
+
+      <div class="quickview-option-label">Size</div>
+      <select class="size-select">
+        <option>Choose your size</option>
+        <option>S</option>
+        <option>M</option>
+        <option>L</option>
+      </select>
+
+      <button type="submit" class="add-to-cart-btn">
+        <span>ADD TO CART</span>
+        <span>&rarr;</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById("LookbookModal");
+    const hotspotBtns = document.querySelectorAll(".hotspot-btn");
+
+    hotspotBtns.forEach(btn => {
+      btn.addEventListener("click", function() {
+        document.getElementById("modal-title").innerText = this.getAttribute("data-title");
+        document.getElementById("modal-price").innerText = this.getAttribute("data-price");
+        document.getElementById("modal-desc").innerText = this.getAttribute("data-desc");
+        document.getElementById("modal-img").src = this.getAttribute("data-image");
+        document.getElementById("modal-variant-id").value = this.getAttribute("data-id");
+
+        modal.classList.add("active");
+      });
+    });
+  });
+
+  function closeLookbookModal() {
+    document.getElementById("LookbookModal").classList.remove("active");
+  }
+
+  document.getElementById("LookbookModal").addEventListener("click", function(e) {
+    if (e.target === this) {
+      closeLookbookModal();
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Shoppable Lookbook",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Tisso vision in the wild"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lookbook_item",
+      "name": "Image & Hotspot",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card Image"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        },
+        {
+          "type": "range",
+          "id": "top_pos",
+          "min": 5,
+          "max": 95,
+          "step": 1,
+          "unit": "%",
+          "label": "Hotspot Vertical Position (Top)",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "left_pos",
+          "min": 5,
+          "max": 95,
+          "step": 1,
+          "unit": "%",
+          "label": "Hotspot Horizontal Position (Left)",
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shoppable Lookbook",
+      "blocks": [
+        { "type": "lookbook_item" },
+        { "type": "lookbook_item" },
+        { "type": "lookbook_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}
