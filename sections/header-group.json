@@ -122,78 +122,12 @@
       "settings": {
         "title": "Tisso vison in the wild"
       }
-    },
-    "shoppable_lookbook_xPDH4j": {
-      "type": "shoppable-lookbook",
-      "blocks": {
-        "hotspot_card_XjYM84": {
-          "type": "hotspot_card",
-          "settings": {
-            "selected_product": "black-leather-bag",
-            "top_pos": 50,
-            "left_pos": 50
-          }
-        },
-        "hotspot_card_LYt7xr": {
-          "type": "hotspot_card",
-          "settings": {
-            "selected_product": "blue-silk-tuxedo",
-            "top_pos": 50,
-            "left_pos": 50
-          }
-        },
-        "hotspot_card_MPdxjX": {
-          "type": "hotspot_card",
-          "settings": {
-            "selected_product": "chequered-red-shirt",
-            "top_pos": 50,
-            "left_pos": 50
-          }
-        },
-        "hotspot_card_m9PqE9": {
-          "type": "hotspot_card",
-          "settings": {
-            "selected_product": "classic-leather-jacket",
-            "top_pos": 50,
-            "left_pos": 50
-          }
-        },
-        "hotspot_card_7wHTGd": {
-          "type": "hotspot_card",
-          "settings": {
-            "selected_product": "classic-varsity-top",
-            "top_pos": 50,
-            "left_pos": 50
-          }
-        },
-        "hotspot_card_jdFkWA": {
-          "type": "hotspot_card",
-          "settings": {
-            "selected_product": "dark-denim-top",
-            "top_pos": 50,
-            "left_pos": 50
-          }
-        }
-      },
-      "block_order": [
-        "hotspot_card_XjYM84",
-        "hotspot_card_LYt7xr",
-        "hotspot_card_MPdxjX",
-        "hotspot_card_m9PqE9",
-        "hotspot_card_7wHTGd",
-        "hotspot_card_jdFkWA"
-      ],
-      "name": "Tisso Wild Lookbook",
-      "settings": {
-        "title": "Tisso vison in the wild"
-      }
     }
   },
   "order": [
     "announcement-bar",
     "header",
     "gift_guide_hero_TQjny9",
-    "shoppable_lookbook_AfQKD9",
-    "shoppable_lookbook_xPDH4j"
+    "shoppable_lookbook_AfQKD9"
   ]
 }
