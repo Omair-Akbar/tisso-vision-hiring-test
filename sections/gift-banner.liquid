@@ -167,7 +167,42 @@
 {% schema %}
 {
   "name": "Gift Banners",
-  "settings": [],
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Gift Banner Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>This is a description for the gift banner section.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Banner Image"
+    },
+    {
+      "type": "text",
+      "id": "announcement",
+      "label": "Announcement Text",
+      "default": "Special Gift Offer Available!"
+    }
+  ],
   "presets": [
     {
       "name": "Gift Banners"
