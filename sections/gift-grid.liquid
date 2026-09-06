@@ -1,0 +1,681 @@
+<section
+  class="gift-grid-section"
+  id="GiftGrid-{{ section.id }}"
+>
+  <div class="gift-grid__header">
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
+
+  <div class="gift-grid">
+    {% for block in section.blocks %}
+      {% assign product = block.settings.product %}
+
+      {% if product != blank %}
+        <button
+          class="gift-grid__item"
+          type="button"
+          data-product-handle="{{ product.handle }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="gift-grid__image-wrapper">
+            {{
+              product.featured_image
+              | image_url: width: 900
+              | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 900',
+                sizes: '(max-width: 749px) 100vw, 33vw',
+                alt: product.title
+            }}
+
+            <span class="gift-grid__plus">+</span>
+          </div>
+        </button>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<div
+  class="gift-modal"
+  id="GiftModal-{{ section.id }}"
+  aria-hidden="true"
+>
+  <div class="gift-modal__overlay" data-close-modal></div>
+
+  <div
+    class="gift-modal__content"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Product details"
+  >
+    <button
+      class="gift-modal__close"
+      type="button"
+      aria-label="Close product details"
+      data-close-modal
+    >
+      ×
+    </button>
+
+    <div class="gift-modal__top">
+      <div class="gift-modal__product-image">
+        <img src="" alt="" data-modal-image>
+      </div>
+
+      <div class="gift-modal__details">
+        <h3 data-modal-title></h3>
+        <p class="gift-modal__price" data-modal-price></p>
+        <div class="gift-modal__description" data-modal-description></div>
+      </div>
+    </div>
+
+    <div class="gift-modal__field">
+      <label>Color</label>
+      <div class="gift-modal__options" data-color-options></div>
+    </div>
+
+    <div class="gift-modal__field">
+      <label for="GiftSize-{{ section.id }}">Size</label>
+      <select id="GiftSize-{{ section.id }}" data-size-select>
+        <option value="">Choose your size</option>
+      </select>
+    </div>
+
+    <button
+      class="gift-modal__add"
+      type="button"
+      data-add-to-cart
+    >
+      <span>ADD TO CART</span>
+      <span>→</span>
+    </button>
+
+    <p class="gift-modal__error" data-modal-error></p>
+  </div>
+</div>
+
+<style>
+  #GiftGrid-{{ section.id }} {
+    padding: 75px 12px 90px;
+    background: #fff;
+  }
+
+  #GiftGrid-{{ section.id }} .gift-grid__header h2 {
+    margin: 0 0 45px;
+    color: #111;
+    font-family: Georgia, serif;
+    font-size: clamp(38px, 4vw, 62px);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+
+  #GiftGrid-{{ section.id }} .gift-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+  }
+
+  #GiftGrid-{{ section.id }} .gift-grid__item {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  #GiftGrid-{{ section.id }} .gift-grid__image-wrapper {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1.12;
+    background: #eee;
+  }
+
+  #GiftGrid-{{ section.id }} .gift-grid__image-wrapper img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  #GiftGrid-{{ section.id }} .gift-grid__item:hover img {
+    transform: scale(1.03);
+  }
+
+  #GiftGrid-{{ section.id }} .gift-grid__plus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 50%;
+    background: #fff;
+    color: #111;
+    font-size: 25px;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .gift-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+  }
+
+  .gift-modal.is-open {
+    display: block;
+  }
+
+  .gift-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .gift-modal__content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(520px, 100%);
+    height: 100%;
+    overflow-y: auto;
+    padding: 60px 30px 35px;
+    background: #fff;
+    color: #111;
+  }
+
+  .gift-modal__close {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    border: 0;
+    background: transparent;
+    color: #000;
+    cursor: pointer;
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .gift-modal__top {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .gift-modal__product-image {
+    aspect-ratio: 0.82;
+    overflow: hidden;
+    background: #eee;
+  }
+
+  .gift-modal__product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gift-modal__details h3 {
+    margin: 5px 0 15px;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  .gift-modal__price {
+    margin: 0 0 20px;
+    font-size: 25px;
+  }
+
+  .gift-modal__description {
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .gift-modal__field {
+    margin-top: 28px;
+  }
+
+  .gift-modal__field label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+
+  .gift-modal__options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border: 1px solid #777;
+  }
+
+  .gift-modal__color {
+    min-height: 60px;
+    border: 0;
+    border-right: 1px solid #777;
+    background: #fff;
+    cursor: pointer;
+    font-size: 20px;
+  }
+
+  .gift-modal__color:last-child {
+    border-right: 0;
+  }
+
+  .gift-modal__color.is-selected {
+    outline: 6px solid #000;
+    outline-offset: -6px;
+  }
+
+  .gift-modal__field select {
+    width: 100%;
+    min-height: 60px;
+    padding: 0 18px;
+    border: 1px solid #777;
+    border-radius: 0;
+    background: #fff;
+    font-size: 20px;
+  }
+
+  .gift-modal__add {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 40px;
+    padding: 22px 28px;
+    border: 0;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    font-size: 20px;
+  }
+
+  .gift-modal__add:hover {
+    background: #333;
+  }
+
+  .gift-modal__add span:last-child {
+    font-size: 32px;
+    transition: transform 0.2s ease;
+  }
+
+  .gift-modal__add:hover span:last-child {
+    transform: translateX(7px);
+  }
+
+  .gift-modal__error {
+    color: #b00020;
+    font-size: 15px;
+  }
+
+  body.gift-modal-open {
+    overflow: hidden;
+  }
+
+  @media screen and (max-width: 749px) {
+    #GiftGrid-{{ section.id }} {
+      padding: 45px 12px 55px;
+    }
+
+    #GiftGrid-{{ section.id }} .gift-grid__header h2 {
+      margin-bottom: 25px;
+      font-size: 38px;
+    }
+
+    #GiftGrid-{{ section.id }} .gift-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .gift-modal__content {
+      width: 100%;
+      padding: 55px 25px 30px;
+    }
+
+    .gift-modal__top {
+      grid-template-columns: 40% 1fr;
+      gap: 12px;
+    }
+
+    .gift-modal__details h3,
+    .gift-modal__price {
+      font-size: 22px;
+    }
+
+    .gift-modal__description {
+      font-size: 17px;
+    }
+
+    .gift-modal__field {
+      margin-top: 24px;
+    }
+
+    .gift-modal__field label {
+      font-size: 19px;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const section = document.querySelector(
+      '#GiftGrid-{{ section.id }}'
+    );
+
+    const modal = document.querySelector(
+      '#GiftModal-{{ section.id }}'
+    );
+
+    if (!section || !modal) return;
+
+    const closeButtons = modal.querySelectorAll('[data-close-modal]');
+    const modalImage = modal.querySelector('[data-modal-image]');
+    const modalTitle = modal.querySelector('[data-modal-title]');
+    const modalPrice = modal.querySelector('[data-modal-price]');
+    const modalDescription = modal.querySelector('[data-modal-description]');
+    const colorOptions = modal.querySelector('[data-color-options]');
+    const sizeSelect = modal.querySelector('[data-size-select]');
+    const addButton = modal.querySelector('[data-add-to-cart]');
+    const errorText = modal.querySelector('[data-modal-error]');
+
+    let currentProduct = null;
+    let selectedColor = '';
+
+    const formatMoney = (amount) => {
+      return new Intl.NumberFormat('{{ localization.language.iso_code }}', {
+        style: 'currency',
+        currency: '{{ cart.currency.iso_code }}'
+      }).format(amount / 100);
+    };
+
+    const openModal = () => {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('gift-modal-open');
+    };
+
+    const closeModal = () => {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('gift-modal-open');
+      errorText.textContent = '';
+    };
+
+    const getOptionIndex = (product, optionName) => {
+      return product.options.findIndex(
+        (option) => option.toLowerCase() === optionName.toLowerCase()
+      );
+    };
+
+    const renderColors = () => {
+      colorOptions.innerHTML = '';
+      selectedColor = '';
+
+      const colorIndex = getOptionIndex(currentProduct, 'color');
+
+      if (colorIndex === -1) {
+        colorOptions.innerHTML =
+          '<span style="padding:15px;">Default</span>';
+        return;
+      }
+
+      const colors = [
+        ...new Set(
+          currentProduct.variants
+            .map((variant) => variant.options[colorIndex])
+            .filter(Boolean)
+        )
+      ];
+
+      colors.forEach((color, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'gift-modal__color';
+        button.textContent = color;
+
+        if (index === 0) {
+          button.classList.add('is-selected');
+          selectedColor = color;
+        }
+
+        button.addEventListener('click', () => {
+          colorOptions
+            .querySelectorAll('.gift-modal__color')
+            .forEach((item) => item.classList.remove('is-selected'));
+
+          button.classList.add('is-selected');
+          selectedColor = color;
+          renderSizes();
+        });
+
+        colorOptions.appendChild(button);
+      });
+    };
+
+    const renderSizes = () => {
+      sizeSelect.innerHTML =
+        '<option value="">Choose your size</option>';
+
+      const colorIndex = getOptionIndex(currentProduct, 'color');
+      const sizeIndex = getOptionIndex(currentProduct, 'size');
+
+      const availableVariants = currentProduct.variants.filter((variant) => {
+        const matchesColor =
+          colorIndex === -1 ||
+          variant.options[colorIndex] === selectedColor;
+
+        return matchesColor && variant.available;
+      });
+
+      const sizes = [
+        ...new Set(
+          availableVariants
+            .map((variant) => {
+              if (sizeIndex === -1) return 'Default';
+              return variant.options[sizeIndex];
+            })
+            .filter(Boolean)
+        )
+      ];
+
+      sizes.forEach((size) => {
+        const option = document.createElement('option');
+        option.value = size;
+        option.textContent = size;
+        sizeSelect.appendChild(option);
+      });
+    };
+
+    const getSelectedVariant = () => {
+      const colorIndex = getOptionIndex(currentProduct, 'color');
+      const sizeIndex = getOptionIndex(currentProduct, 'size');
+      const selectedSize = sizeSelect.value;
+
+      return currentProduct.variants.find((variant) => {
+        const matchesColor =
+          colorIndex === -1 ||
+          variant.options[colorIndex] === selectedColor;
+
+        const matchesSize =
+          sizeIndex === -1 ||
+          variant.options[sizeIndex] === selectedSize ||
+          (sizeIndex !== -1 && selectedSize === '');
+
+        return matchesColor && matchesSize && variant.available;
+      });
+    };
+
+    const addVariantToCart = async (variantId, quantity = 1) => {
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          items: [
+            {
+              id: variantId,
+              quantity
+            }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Unable to add product to cart.');
+      }
+
+      return response.json();
+    };
+
+    section.querySelectorAll('[data-product-handle]').forEach((item) => {
+      item.addEventListener('click', async () => {
+        const handle = item.dataset.productHandle;
+
+        try {
+          const response = await fetch(
+            `/products/${handle}.js`
+          );
+
+          if (!response.ok) {
+            throw new Error('Product could not be loaded.');
+          }
+
+          currentProduct = await response.json();
+
+          modalImage.src = currentProduct.featured_image;
+          modalImage.alt = currentProduct.title;
+          modalTitle.textContent = currentProduct.title;
+          modalPrice.textContent = formatMoney(
+            currentProduct.price
+          );
+          modalDescription.innerHTML =
+            currentProduct.description;
+
+          renderColors();
+          renderSizes();
+          openModal();
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    });
+
+    closeButtons.forEach((button) => {
+      button.addEventListener('click', closeModal);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeModal();
+    });
+
+    addButton.addEventListener('click', async () => {
+      if (!currentProduct) return;
+
+      const variant = getSelectedVariant();
+
+      if (!variant) {
+        errorText.textContent =
+          'Please choose an available variant.';
+        return;
+      }
+
+      addButton.disabled = true;
+      errorText.textContent = '';
+
+      try {
+        await addVariantToCart(variant.id);
+
+        /*
+          Requirement:
+          If product has Black and Medium selected,
+          add Soft Winter Jacket automatically.
+        */
+        const colorIndex = getOptionIndex(currentProduct, 'color');
+        const sizeIndex = getOptionIndex(currentProduct, 'size');
+
+        const isBlack =
+          colorIndex !== -1 &&
+          variant.options[colorIndex].toLowerCase() === 'black';
+
+        const isMedium =
+          sizeIndex !== -1 &&
+          variant.options[sizeIndex].toLowerCase() === 'medium';
+
+        if (isBlack && isMedium) {
+          const jacketResponse = await fetch(
+            '/products/soft-winter-jacket.js'
+          );
+
+          if (jacketResponse.ok) {
+            const jacket = await jacketResponse.json();
+            const jacketVariant = jacket.variants.find(
+              (item) => item.available
+            );
+
+            if (jacketVariant) {
+              await addVariantToCart(jacketVariant.id);
+            }
+          }
+        }
+
+        window.location.href = '/cart';
+      } catch (error) {
+        errorText.textContent =
+          'Something went wrong. Please try again.';
+        console.error(error);
+      } finally {
+        addButton.disabled = false;
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Gift product grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Tisso vison in the wild"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Gift product grid",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}
