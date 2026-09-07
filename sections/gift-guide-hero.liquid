@@ -1,15 +1,4 @@
 {%- style -%}
-
-.hero-banner-container {
-  display: block !important;
-  width: 100%;
-  min-height: 500px !important; /* Temporarily height test karne ke liye */
-  background-image: url("{{ 'hero-bg.png' | asset_url }}") !important;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
 .tisso-hero-wrapper {
   position: relative;
   width: 100%;
@@ -53,6 +42,9 @@
   display: flex;
   align-items: center;
   padding: 60px 40px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .tisso-hero-bg {
@@ -70,7 +62,7 @@
   z-index: 2;
   max-width: 420px;
   background: rgba(255, 255, 255, 0.85);
-  padding: 20px;
+  padding: 30px;
   backdrop-filter: blur(3px);
 }
 
@@ -130,13 +122,13 @@
 }
 {%- endstyle -%}
 
-
+<div class="tisso-hero-wrapper">
   <div class="tisso-hero-banner">
     <div class="brand-logo" style="font-weight: 700; font-size: 18px; letter-spacing: 1px; color: #000; text-transform: uppercase;">
       TISSO VISION
     </div>
     <div class="banner-text">{{ section.settings.banner_text }}</div>
-    <a href="{{ section.settings.banner_link }}" class="banner-btn">
+    <a href="{{ section.settings.banner_link | default: '#' }}" class="banner-btn">
       {{ section.settings.banner_btn_text }} &rarr;
     </a>
   </div>
@@ -144,12 +136,14 @@
   <div class="tisso-hero-content-wrap">
     {% if section.settings.bg_image != blank %}
       <img src="{{ section.settings.bg_image | image_url: width: 2000 }}" alt="Hero Background" class="tisso-hero-bg" loading="lazy">
+    {% else %}
+      <img src="{{ 'hero-bg.png' | asset_url }}" alt="Hero Background" class="tisso-hero-bg" loading="lazy">
     {% endif %}
 
     <div class="tisso-hero-text-box">
       <h1 class="tisso-hero-title">{{ section.settings.heading }}</h1>
       <div class="tisso-hero-desc">{{ section.settings.description }}</div>
-      <a href="{{ section.settings.button_link }}" class="tisso-hero-cta">
+      <a href="{{ section.settings.button_link | default: '#' }}" class="tisso-hero-cta">
         {{ section.settings.button_label }} &rarr;
       </a>
     </div>
