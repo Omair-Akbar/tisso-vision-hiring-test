@@ -1,12 +1,13 @@
 {%- style -%}
 
 .hero-banner-container {
-  background-image: url("{{ 'hero-bg.PNG' | asset_url }}");
+  display: block !important;
+  width: 100%;
+  min-height: 500px !important; /* Temporarily height test karne ke liye */
+  background-image: url("{{ 'hero-bg.png' | asset_url }}") !important;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  width: 100%;
-  min-height: 500px; /* Aap apni marzi se height adjust kar sakti hain */
 }
 
 .tisso-hero-wrapper {
