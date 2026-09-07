@@ -40,8 +40,17 @@
   position: relative;
   min-height: 600px;
   display: flex;
-  align-items: center;
-  padding: 60px 5%;
+  align-items: flex-start; /* Center ki jagah top align kiya */
+  padding: 80px 5% 60px;
+}
+
+.tisso-hero-text-box {
+  position: relative;
+  z-index: 2;
+  max-width: 420px;
+  background: transparent;
+  padding: 0;
+  margin-top: 140px; /* Is se text camera/glasses ke neeche khali jagah par shift ho jayega */
 }
 
 .tisso-hero-bg {
